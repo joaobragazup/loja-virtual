@@ -185,11 +185,42 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
         assertEquals("Category categoryId is not registered", errorMessage);
     }
 
-    //TODO - Verificar como fazer se o categoryId vier nulo
+
+    @Test
+    @DisplayName("Should not register a product when category id is null")
+    void test4() throws Exception {
+        NewProductRequest newProductRequest = new NewProductRequest(
+                "Notebook",
+                BigDecimal.valueOf(1500),
+                5,
+                photos,
+                characteristicRequests,
+                "Best Notebook Ever",
+                null
+        );
+
+        Exception exception = mockMvc.perform(
+                        POST("/api/products", newProductRequest)
+                                .with(jwt().jwt(jwt -> {
+                                                    jwt.claim("email", "joao@zup.com.br");
+                                                })
+                                                .authorities(new SimpleGrantedAuthority("SCOPE_products:write"))
+                                )
+                )
+                .andExpect(
+                        status().isBadRequest()
+                ).andReturn().getResolvedException();
+
+        MethodArgumentNotValidException resolvedException = (MethodArgumentNotValidException) exception;
+
+        String errorMessage = resolvedException.getFieldError().getDefaultMessage();
+
+        assertEquals("must not be null", errorMessage);
+    }
 
     @Test
     @DisplayName("Should not register a product with photo size less than 1 and characterisct size less than 3")
-    void test4() throws Exception {
+    void test5() throws Exception {
 
         List<String> photos = List.of();
 
@@ -238,7 +269,7 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a product with negative stock and price")
-    void test5() throws Exception {
+    void test6() throws Exception {
         NewProductRequest newProductRequest = new NewProductRequest(
                 "Notebook",
                 BigDecimal.valueOf(-1500),
@@ -282,7 +313,7 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a product without token")
-    void test6() throws Exception {
+    void test7() throws Exception {
         mockMvc.perform(
                 POST("/api/products", 1)
         ).andExpect(
@@ -292,7 +323,7 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a product without scope token")
-    void test7() throws Exception {
+    void test8() throws Exception {
         mockMvc.perform(
                 POST("/api/products", 1)
                         .with(jwt())
@@ -303,7 +334,7 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a product without authenticated user")
-    void test8() throws Exception {
+    void test9() throws Exception {
         NewProductRequest newProductRequest = new NewProductRequest(
                 "Notebook",
                 BigDecimal.valueOf(1500),

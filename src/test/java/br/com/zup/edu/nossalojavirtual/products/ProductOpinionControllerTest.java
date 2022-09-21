@@ -158,7 +158,7 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
     }
 
     @Test
-    @DisplayName("Should not register an opinion for a product when product_id is invalid")
+    @DisplayName("Should not register an opinion for a product when product id is invalid")
     void test3() throws Exception {
 
         NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
@@ -187,12 +187,10 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
         assertEquals("Category productId is not registered",errorMessages);
     }
 
+    //TODO - Verificar Teste com ID Nulo
     @Test
-    @DisplayName("Should not register an opinion for a product when product_id is invalid")
-    void test____________() throws Exception {
-
-        NestedServletException nullPointerException = assertThrows(NestedServletException.class, () -> {
-
+    @DisplayName("Should not register an opinion for a product when product id is nul")
+    void test4() throws Exception {
             NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
                     5,
                     "Good",
@@ -216,14 +214,12 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
 
         String errorMessages = resolvedException.getFieldError().getDefaultMessage();
 
-        }, "");
-
-        assertEquals("Category productId is not registered",nullPointerException.getLocalizedMessage());
+        assertEquals("must not be null",errorMessages);
     }
 
     @Test
     @DisplayName("Should not register an opinion for a product when description length is larger than 500 characteres")
-    void test4() throws Exception {
+    void test5() throws Exception {
 
         String description501 = "a".repeat(501);
 
@@ -255,7 +251,7 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register an opinion for a product without token")
-    void test5() throws Exception {
+    void test6() throws Exception {
         mockMvc.perform(
                 POST("/api/opinions", 1)
         ).andExpect(
@@ -265,7 +261,7 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register an opinion for a product without scope token")
-    void test6() throws Exception {
+    void test7() throws Exception {
         mockMvc.perform(
                 POST("/api/opinions", 1)
                         .with(jwt())
@@ -276,7 +272,7 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register an opinion for a product without authenticated user")
-    void test7() throws Exception {
+    void test8() throws Exception {
 
         NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
                 5,
@@ -299,5 +295,4 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
         assertEquals("User not authenticated", errorMessage);
     }
 
-    //TODO - Verificar Teste com ID Nulo
 }
