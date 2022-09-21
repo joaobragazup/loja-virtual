@@ -1,4 +1,9 @@
-# Nossa loja virtual
+# Funcionalidades desenvolvidas
+1. Implementação da autenticação
+2. Desenvolvimento de testes necessários
+
+
+# Nossa loja virtual 
 
 Esse projeto simula um marketplace. 
 Nele é possível cadastrar produtos, categorias, usuários e realizar compras.
@@ -19,6 +24,3 @@ As regras de necócio para cada funcionalidade podem ser [consultadas neste arqu
 6. Buscar produtos por ID
 7. Realizar comprar
 
-## Objetivos
-1. Implementar a autenticação na aplicação
-2. Escrever os testes necessários na aplicação
