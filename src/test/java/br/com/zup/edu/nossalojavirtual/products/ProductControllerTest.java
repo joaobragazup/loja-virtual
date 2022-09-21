@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -179,10 +180,12 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
 
         MethodArgumentNotValidException resolvedException = (MethodArgumentNotValidException) exception;
 
-        String errorMessages = resolvedException.getFieldError().getDefaultMessage();
+        String errorMessage = resolvedException.getFieldError().getDefaultMessage();
 
-        assertEquals(errorMessages, "Category categoryId is not registered");
+        assertEquals("Category categoryId is not registered", errorMessage);
     }
+
+    //TODO - Verificar como fazer se o categoryId vier nulo
 
     @Test
     @DisplayName("Should not register a product with photo size less than 1 and characterisct size less than 3")
@@ -301,11 +304,27 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
     @Test
     @DisplayName("Should not register a product without authenticated user")
     void test8() throws Exception {
-        mockMvc.perform(
-                POST("/api/products", 1)
+        NewProductRequest newProductRequest = new NewProductRequest(
+                "Notebook",
+                BigDecimal.valueOf(1500),
+                5,
+                photos,
+                characteristicRequests,
+                "The best notebook",
+                category.getId()
+        );
+
+        Exception exception = mockMvc.perform(
+                POST("/api/products", newProductRequest)
                         .with(jwt().authorities(new SimpleGrantedAuthority("SCOPE_products:write")))
         ).andExpect(
-                status().isBadRequest()
-        );
+                status().isForbidden()
+        ).andReturn().getResolvedException();
+
+        ResponseStatusException resolvedException = (ResponseStatusException) exception;
+
+        String errorMessage = resolvedException.getReason();
+
+        assertEquals("User not authenticated", errorMessage);
     }
 }

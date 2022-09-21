@@ -39,8 +39,8 @@ public class ResourceServerConfig{
                 .antMatchers(HttpMethod.GET, "/api/products/**").hasAuthority("SCOPE_products:read") //6. Buscar produtos por ID
                 .antMatchers(HttpMethod.POST, "/api/purchase").hasAuthority("SCOPE_purchase:write") //7. Realizar comprar
                 .antMatchers(HttpMethod.POST, "/api/purchases/confirm-payment").hasAuthority("SCOPE_purchase:write") //8. PaymentGatewayReturnController
-                .anyRequest()// -> para criar o h2 eu preciso remover isso //TODO Entender o pq disso
-                .authenticated()// -> para criar o h2 eu preciso remover isso //TODO Entender o pq disso
+                .anyRequest()// -> para criar o h2 eu preciso remover isso
+                .authenticated()// -> para criar o h2 eu preciso remover isso
                 .and()
                 .oauth2ResourceServer()
                 .jwt(jwt -> jwt.jwkSetUri("http://localhost:18080/auth/realms/minha-loja-virtual/protocol/openid-connect/certs"))

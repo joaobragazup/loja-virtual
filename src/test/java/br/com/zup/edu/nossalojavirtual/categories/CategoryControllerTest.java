@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import java.util.List;
 
@@ -24,18 +26,12 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
 class CategoryControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Autowired
     CategoryRepository categoryRepository;
 
-    @Mock
-    CategoryUniqueNameValidator categoryUniqueNameValidator;
-
     Category category;
-
-    Errors errors;
 
     @BeforeEach
     void setUp() {
@@ -132,20 +128,12 @@ class CategoryControllerTest extends NossaLojaVirtualApplicationTest {
 
         MethodArgumentNotValidException resolvedException = (MethodArgumentNotValidException) exception;
 
-        List<String> errorMessages = resolvedException
-                .getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(ExceptionUtil::getFieldAndDefaultErrorMessage)
-                .toList();
+        String errorMessages = resolvedException.getFieldError().getDefaultMessage();
 
 
         List<Category> categories = categoryRepository.findAll();
         assertEquals(0, categories.size());
-        assertThat(errorMessages, containsInAnyOrder(
-                "superCategory The super category does not exists"
-
-        ));
+        assertEquals(errorMessages,"The super category does not exist");
     }
 
     @Test
@@ -164,10 +152,9 @@ class CategoryControllerTest extends NossaLojaVirtualApplicationTest {
 
         String errorMessages = resolvedException.getFieldError().getDefaultMessage();
 
-
         List<Category> categories = categoryRepository.findAll();
         assertEquals(1, categories.size());
-        assertEquals("name is already registered",errorMessages);
+        assertEquals("this category is already registered",errorMessages);
     }
 
     @Test

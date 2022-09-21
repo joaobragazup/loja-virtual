@@ -41,20 +41,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+//@ExtendWith(MockitoExtension.class)
 class PaymentGatewayReturnControllerTest extends NossaLojaVirtualApplicationTest {
 
-    @Mock
-    SendPurchaseConfirmationToInvoiceSystem sendPurchaseConfirmationToInvoiceSystem;
-    @Mock
-    SendPurchaseConfirmationToSellersSystem sendPurchaseConfirmationToSellersSystem;
-    @Mock
-    SendPurchaseEmailConfirmation sendPurchaseEmailConfirmation;
-    @Mock
-    SendPurchaseFailEmail sendPurchaseFailEmail;
-
-    @SpyBean
-    PaymentGatewayReturnController paymentGatewayReturnController;
+//    @Mock
+//    SendPurchaseConfirmationToInvoiceSystem sendPurchaseConfirmationToInvoiceSystem;
+//    @Mock
+//    SendPurchaseConfirmationToSellersSystem sendPurchaseConfirmationToSellersSystem;
+//    @Mock
+//    SendPurchaseEmailConfirmation sendPurchaseEmailConfirmation;
+//    @Mock
+//    SendPurchaseFailEmail sendPurchaseFailEmail;
+//
+//    @SpyBean
+//    PaymentGatewayReturnController paymentGatewayReturnController;
 
     @Autowired
     PurchaseRepository purchaseRepository;
@@ -68,15 +68,15 @@ class PaymentGatewayReturnControllerTest extends NossaLojaVirtualApplicationTest
     @Autowired
     UserRepository userRepository;
 
+    List<Photo> photos = new ArrayList<>();
+
+    Set<Characteristic> characteristic = new HashSet<>();
+
     User user;
 
     Category category;
 
     PreProduct preProduct;
-
-    List<Photo> photos = new ArrayList<>();
-
-    Set<Characteristic> characteristic = new HashSet<>();
 
     Product product;
 

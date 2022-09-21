@@ -41,7 +41,7 @@ class ProductController {
     @PostMapping
     @PreAuthorize("hasAuthority('SCOPE_products:write')")
     ResponseEntity<?> create(@RequestBody @Valid NewProductRequest newProduct,
-                             @AuthenticationPrincipal(expression = "claims['email']") String username //TODO: Injetar usuário autenticado (FEITO)
+                             @AuthenticationPrincipal(expression = "claims['email']") String username
                              ) {
 
         User user = userRepository.findByEmail(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authenticated"));

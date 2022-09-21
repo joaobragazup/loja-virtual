@@ -41,7 +41,7 @@ class QuestionController {
     @PostMapping
     ResponseEntity<?> askQuestion(@PathVariable("id") UUID id,
                                   @RequestBody @Valid NewQuestionRequest newQuestion,
-                                  @AuthenticationPrincipal(expression = "claims['email']") String username, //TODO: Injetar usuário autenticado (FEITO)
+                                  @AuthenticationPrincipal(expression = "claims['email']") String username,
                                   UriComponentsBuilder uriBuilder) {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authenticated"));
 

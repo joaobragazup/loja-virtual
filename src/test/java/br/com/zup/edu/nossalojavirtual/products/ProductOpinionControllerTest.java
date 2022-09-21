@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.NestedServletException;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-//TODO - Rodar com coverage
 class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Autowired
@@ -122,7 +123,7 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
         NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
                 6,
                 null,
-                null,
+                "Description does not need to be null",
                 product.getId()
         );
 
@@ -187,15 +188,49 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
     }
 
     @Test
+    @DisplayName("Should not register an opinion for a product when product_id is invalid")
+    void test____________() throws Exception {
+
+        NestedServletException nullPointerException = assertThrows(NestedServletException.class, () -> {
+
+            NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
+                    5,
+                    "Good",
+                    "I liked a lot",
+                    null
+            );
+
+            Exception exception = mockMvc.perform(
+                            POST("/api/opinions", newOpinionRequest)
+                                    .with(jwt().jwt(jwt -> {
+                                                        jwt.claim("email", "joao@zup.com.br");
+                                                    })
+                                                    .authorities(new SimpleGrantedAuthority("SCOPE_products:write"))
+                                    )
+                    )
+                    .andExpect(
+                            status().isBadRequest()
+                    ).andReturn().getResolvedException();
+
+        MethodArgumentNotValidException resolvedException = (MethodArgumentNotValidException) exception;
+
+        String errorMessages = resolvedException.getFieldError().getDefaultMessage();
+
+        }, "");
+
+        assertEquals("Category productId is not registered",nullPointerException.getLocalizedMessage());
+    }
+
+    @Test
     @DisplayName("Should not register an opinion for a product when description length is larger than 500 characteres")
     void test4() throws Exception {
 
-        String description500 = "a".repeat(1000);
+        String description501 = "a".repeat(501);
 
         NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
                 5,
                 "Good",
-                description500,
+                description501,
                 product.getId()
         );
 
@@ -242,11 +277,27 @@ class ProductOpinionControllerTest extends NossaLojaVirtualApplicationTest {
     @Test
     @DisplayName("Should not register an opinion for a product without authenticated user")
     void test7() throws Exception {
-        mockMvc.perform(
+
+        NewOpinionRequest newOpinionRequest = new NewOpinionRequest(
+                5,
+                "Good",
+                "Very Good",
+                product.getId()
+        );
+
+        Exception exception = mockMvc.perform(
                 POST("/api/opinions", 1)
                         .with(jwt().authorities(new SimpleGrantedAuthority("SCOPE_products:write")))
         ).andExpect(
                 status().isBadRequest()
-        );
+        ).andReturn().getResolvedException();
+
+        ResponseStatusException resolvedException = (ResponseStatusException) exception;
+
+        String errorMessage = resolvedException.getReason();
+
+        assertEquals("User not authenticated", errorMessage);
     }
+
+    //TODO - Verificar Teste com ID Nulo
 }

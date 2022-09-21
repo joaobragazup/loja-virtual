@@ -26,6 +26,9 @@ class QuestionResponse {
         this.createdAt = question.getCreatedAt();
     }
 
+    public QuestionResponse() {
+    }
+
     public Long getId() {
         return id;
     }

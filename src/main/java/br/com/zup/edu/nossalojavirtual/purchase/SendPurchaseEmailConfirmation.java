@@ -25,7 +25,6 @@ class SendPurchaseEmailConfirmation implements PostPurchaseAction {
      * @param postPaymentPurchase a success post payment purchase
      * @param uriBuilder build uri component
      */
-    //TODO: Apply i18n in messages
     @Override
     public void execute(PostPaymentProcessedPurchase postPaymentPurchase, UriComponentsBuilder uriBuilder) {
         if (!postPaymentPurchase.isPaymentSuccessful()) {

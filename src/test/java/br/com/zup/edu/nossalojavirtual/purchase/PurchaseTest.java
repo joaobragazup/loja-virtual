@@ -102,8 +102,6 @@ class PurchaseTest extends NossaLojaVirtualApplicationTest {
         assertEquals("quantity must not be less than 0",thrown.getMessage());
     }
 
-
-    //TODO FINALIZAR validação isPaymentSuccessful
     @Test
     @DisplayName("Should not register a purchase when throw IllegalStateException because processing the same purchase twice ")
     void test2() {

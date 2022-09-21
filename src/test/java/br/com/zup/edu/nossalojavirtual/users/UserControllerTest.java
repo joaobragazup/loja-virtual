@@ -21,7 +21,6 @@ class   UserControllerTest extends NossaLojaVirtualApplicationTest {
     @Autowired
     private UserRepository userRepository;
 
-
     @AfterEach
     void deleteAll(){
         userRepository.deleteAll();
@@ -78,9 +77,9 @@ class   UserControllerTest extends NossaLojaVirtualApplicationTest {
     }
 
     @Test
-    @DisplayName("Must not register a user with password shorter than 6 characters")
+    @DisplayName("Must not register a user with password shorter than 6 characters and invalid email format")
     void test3() throws Exception {
-        var user = new NewUserRequest("teste@zup.com.br", "12345");
+        var user = new NewUserRequest("testezup.com.br", "12345");
         Password password = Password.encode(user.getPassword());
 
         Exception exception = mockMvc.perform(
@@ -99,7 +98,8 @@ class   UserControllerTest extends NossaLojaVirtualApplicationTest {
                 .toList();
 
         assertThat(errorMessages, containsInAnyOrder(
-                "password size must be between 6 and 2147483647"
+                "password size must be between 6 and 2147483647",
+                "login must be a well-formed email address"
         ));
     }
 

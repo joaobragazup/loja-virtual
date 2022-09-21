@@ -27,7 +27,7 @@ class SuperCategoryExistsValidator implements Validator {
             Long superCategoryId = superCategory.get();
 
             if (!categoryRepository.existsById(superCategoryId)) {
-                errors.rejectValue("superCategory", "category.superCategory", "The super category does not exists");
+                errors.rejectValue("superCategory", "category.superCategory", "The super category does not exist");
             }
         }
 

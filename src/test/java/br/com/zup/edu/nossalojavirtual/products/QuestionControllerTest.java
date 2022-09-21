@@ -8,6 +8,8 @@ import br.com.zup.edu.nossalojavirtual.shared.email.EmailRepository;
 import br.com.zup.edu.nossalojavirtual.users.Password;
 import br.com.zup.edu.nossalojavirtual.users.User;
 import br.com.zup.edu.nossalojavirtual.users.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,10 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -32,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-//TODO - Arrumar o problema de Constraint
 class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Autowired
@@ -61,6 +60,9 @@ class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
     Set<Characteristic> characteristic = new HashSet<>();
 
     Product product;
+
+    @Autowired
+    ObjectMapper mapper;
 
     @AfterEach
     void deleteAll(){
@@ -119,8 +121,14 @@ class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
                         redirectedUrlPattern("/api/products/*/questions/*")
                 ).andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
 
-        assertNotNull(payloadResponse);
+        TypeFactory typeFactory = mapper.getTypeFactory();
+        List<QuestionResponse> questionResponse = mapper.readValue(payloadResponse, typeFactory.constructCollectionType(List.class, QuestionResponse.class));
         List<Question> questions = questionRepository.findAll();
+
+        assertEquals(newQuestionRequest.getTitle(), questionResponse.get(0).getTitle());
+        assertEquals(user.getUsername(), questionResponse.get(0).getUser());
+        assertTrue(questionResponse.get(0).getCreatedAt().isBefore(LocalDateTime.now()));
+        assertNotNull(payloadResponse);
         assertEquals(1, questions.size());
     }
 
@@ -159,37 +167,13 @@ class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
     }
 
     @Test
-    @DisplayName("Should not register a question to a product when product Id is invalid")
+    @DisplayName("Should not register a question to a product when possible product is empty")
     void test3() throws Exception {
 
         NewQuestionRequest newQuestionRequest = new NewQuestionRequest("Are you ok?");
 
         mockMvc.perform(
-                        POST("/api/products/{id}/questions", newQuestionRequest, Integer.MAX_VALUE)
-                                .with(jwt().jwt(jwt -> {
-                                                    jwt.claim("email", "joao@zup.com.br");
-                                                })
-                                                .authorities(new SimpleGrantedAuthority("SCOPE_products:write"))
-                                )
-                )
-                .andExpect(
-                        status().isBadRequest()
-                );
-
-        List<Question> questions = questionRepository.findAll();
-        assertEquals(0, questions.size());
-    }
-
-    @Test
-    @DisplayName("Should not register a question to a product when possible product is empty")
-    void test4() throws Exception {
-
-        productRepository.deleteAll();
-        NewQuestionRequest newQuestionRequest = new NewQuestionRequest("Are you ok?");
-
-
-        mockMvc.perform(
-                        POST("/api/products/{id}/questions", newQuestionRequest, product.getId())
+                        POST("/api/products/{id}/questions", newQuestionRequest, UUID.randomUUID())
                                 .with(jwt().jwt(jwt -> {
                                                     jwt.claim("email", "joao@zup.com.br");
                                                 })
@@ -206,7 +190,7 @@ class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a question to a product without token")
-    void test5() throws Exception {
+    void test4() throws Exception {
 
         mockMvc.perform(
                 POST("/api/products/{id}/questions", 1, this.product.getId())
@@ -217,7 +201,7 @@ class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a question to a product without scope token")
-    void test6() throws Exception {
+    void test5() throws Exception {
 
         mockMvc.perform(
                 POST("/api/products/{id}/questions", 1, this.product.getId())
@@ -229,15 +213,21 @@ class QuestionControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not register a question to a product without authenticated user")
-    void test7() throws Exception {
+    void test6() throws Exception {
+        NewQuestionRequest newQuestionRequest = new NewQuestionRequest("Are you ok?");
 
-        mockMvc.perform(
-                POST("/api/products/{id}/questions", 1, this.product.getId())
+        Exception exception = mockMvc.perform(
+                POST("/api/products/{id}/questions", newQuestionRequest, this.product.getId())
                         .with(jwt().authorities(new SimpleGrantedAuthority("SCOPE_products:write")))
         ).andExpect(
-                status().isBadRequest()
-        );
-    }
+                status().isForbidden()
+        ).andReturn().getResolvedException();
 
+        ResponseStatusException resolvedException = (ResponseStatusException) exception;
+
+        String errorMessage = resolvedException.getReason();
+
+        assertEquals("User not authenticated", errorMessage);
+    }
 
 }

@@ -39,7 +39,7 @@ class PurchaseController {
     @PostMapping
     @Transactional
     public ResponseEntity<?> buy(@RequestBody @Valid NewPurchaseRequest newPurchase,
-                                 @AuthenticationPrincipal(expression = "claims['email']") String username, //TODO: Injetar o usuário autenticado (FEITO)
+                                 @AuthenticationPrincipal(expression = "claims['email']") String username,
                                  UriComponentsBuilder uriBuilder) throws BindException {
         User buyer = userRepository.findByEmail(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "User not authenticated"));
 

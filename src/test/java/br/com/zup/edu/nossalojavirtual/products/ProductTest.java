@@ -107,7 +107,7 @@ class ProductTest extends NossaLojaVirtualApplicationTest {
     @Test
     @DisplayName("Should not register a product when throw IllegalArgumentException because of stock quantity value less than 0")
     void test3() {
-        this.preProduct = new PreProduct(user, category, "Xbox", BigDecimal.TEN, -5, "xbox game");
+        this.preProduct = new PreProduct(user, category, "Xbox", BigDecimal.TEN, -1, "xbox game");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             this.product = new Product(preProduct, photos, characteristic);

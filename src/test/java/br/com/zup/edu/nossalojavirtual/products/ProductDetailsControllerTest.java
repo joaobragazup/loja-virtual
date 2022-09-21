@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
@@ -127,25 +124,7 @@ class ProductDetailsControllerTest extends NossaLojaVirtualApplicationTest {
     @DisplayName("Should not detail the product if product Id is invalid")
     void test2() throws Exception{
 
-        mockMvc.perform(GET("/api/products/{id}", Integer.MAX_VALUE)
-                        .with(jwt().jwt(jwt -> {
-                                            jwt.claim("email", "joao@zup.com.br");
-                                        })
-                                        .authorities(new SimpleGrantedAuthority("SCOPE_products:read"))
-                        ))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").doesNotExist());
-
-    }
-
-    @Test
-    @DisplayName("Should not detail the product if product Id is invalid")
-    void test3() throws Exception{
-        questionRepository.deleteAll();
-        productOpinionRepository.deleteAll();
-        productRepository.deleteAll();
-
-        mockMvc.perform(GET("/api/products/{id}", product.getId())
+        mockMvc.perform(GET("/api/products/{id}", UUID.randomUUID())
                         .with(jwt().jwt(jwt -> {
                                             jwt.claim("email", "joao@zup.com.br");
                                         })
@@ -158,7 +137,7 @@ class ProductDetailsControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not detail a product without token")
-    void test4() throws Exception {
+    void test3() throws Exception {
 
         mockMvc.perform(
                 GET("/api/products/{id}", product.getId())
@@ -169,7 +148,7 @@ class ProductDetailsControllerTest extends NossaLojaVirtualApplicationTest {
 
     @Test
     @DisplayName("Should not detail a product without scope token")
-    void test5() throws Exception {
+    void test4() throws Exception {
 
         mockMvc.perform(
                 GET("/api/products/{id}", product.getId())

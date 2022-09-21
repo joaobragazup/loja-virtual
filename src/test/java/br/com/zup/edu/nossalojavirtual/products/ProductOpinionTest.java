@@ -85,11 +85,16 @@ class ProductOpinionTest extends NossaLojaVirtualApplicationTest {
     @DisplayName("Should not register a product opinion when throw IllegalArgumentException because rating need to be between 1 and 5 ")
     void test1() {
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            this.productOpinion = new ProductOpinion(9, "Ok", "A", product, user);
+        IllegalArgumentException exceptionRating6 = assertThrows(IllegalArgumentException.class, () -> {
+            this.productOpinion = new ProductOpinion(6, "Ok", "A", product, user);
         }, "Expected IllegalArgumentException to be thrown, but nothing was thrown.");
 
-        assertEquals("rating must be between 1 and 5", exception.getMessage());
+        IllegalArgumentException exceptionRating0 = assertThrows(IllegalArgumentException.class, () -> {
+            this.productOpinion = new ProductOpinion(0, "Ok", "A", product, user);
+        }, "Expected IllegalArgumentException to be thrown, but nothing was thrown.");
+
+        assertEquals("rating must be between 1 and 5", exceptionRating6.getMessage());
+        assertEquals("rating must be between 1 and 5", exceptionRating0.getMessage());
     }
 
     @Test

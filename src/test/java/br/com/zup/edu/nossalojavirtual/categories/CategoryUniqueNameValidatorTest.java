@@ -1,6 +1,7 @@
 package br.com.zup.edu.nossalojavirtual.categories;
 
 import br.com.zup.edu.nossalojavirtual.NossaLojaVirtualApplicationTest;
+import br.com.zup.edu.nossalojavirtual.shared.validators.UniqueFieldValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import java.util.List;
 
@@ -66,4 +69,6 @@ class CategoryUniqueNameValidatorTest extends NossaLojaVirtualApplicationTest {
 
         Mockito.verify(errors,Mockito.never()).rejectValue("","","");
     }
+
+
 }
