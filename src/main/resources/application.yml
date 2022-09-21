@@ -1,0 +1,61 @@
+###
+## Server
+###
+server:
+  error:
+    include-message: always
+    include-exception: false
+    include-stacktrace: on_param
+    include-binding-errors: always
+  port: 8080
+  servlet:
+    context-path: /loja-virtual
+
+##
+# Spring and DataSource
+##
+spring:
+  output:
+    ansi:
+      enabled: ALWAYS
+  datasource:
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:devdb
+    username: sa
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+      dialect: org.hibernate.dialect.H2Dialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18080/auth/realms/minha-loja-virtual
+          jwk-set-uri: http://localhost:18080/auth/realms/minha-loja-virtual/protocol/openid-connect/certs
+      client:
+        registration:
+          minha-loja-virtual:
+            authorization-grant-type: client_credentials
+            client-id: loja-virtual-client
+            client-secret: knIyuD3eDeuvnsLs51xKPKfFCTVwD761
+            scope: products:read, products:write, categories:write, purchase:write
+        provider:
+          minha-loja-virtual:
+            token-uri: http://localhost:18080/auth/realms/minha-loja-virtual/protocol/openid-connect/token
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+      hibernate: ERROR
