@@ -12,7 +12,7 @@ O projeto tem alguns pontos de integração com outros sistemas
 
 Nosso objetivo é realizar os testes da aplicaçõa e implementar a segurança dos endpoints
 
-## Funcionalidades
+## Funcionalidades ja existentes
 
 As regras de necócio para cada funcionalidade podem ser [consultadas neste arquivo](regras/regras.md). Basicamente elas são:
 
