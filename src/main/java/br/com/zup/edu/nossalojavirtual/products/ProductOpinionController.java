@@ -3,6 +3,8 @@ package br.com.zup.edu.nossalojavirtual.products;
 import br.com.zup.edu.nossalojavirtual.shared.validators.ObjectIsRegisteredValidator;
 import br.com.zup.edu.nossalojavirtual.users.User;
 import br.com.zup.edu.nossalojavirtual.users.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +22,7 @@ import static org.springframework.http.ResponseEntity.created;
 @RequestMapping("/api/opinions")
 class ProductOpinionController {
 
+    Logger logger = LoggerFactory.getLogger(ProductOpinionController.class);
     private final ProductOpinionRepository productOpinionRepository;
     private final ProductRepository productRepository;
 
@@ -44,6 +47,9 @@ class ProductOpinionController {
         productOpinionRepository.save(opinion);
 
         URI location = URI.create("/api/opinions/" + opinion.getId());
+
+        logger.info("Opinion for product registered");
+
         return created(location).build();
     }
 

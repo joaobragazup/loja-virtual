@@ -4,10 +4,10 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:latest
     environment:
-      DB_VENDOR: h2
+      DB_VENDOR: postgres
       DB_DATABASE: keycloak
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - 18080:8080
-    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev", "--http-relative-path=/auth"]
+    entrypoint: ["/opt/keycloak/bin/kc.sh", "start-dev"]

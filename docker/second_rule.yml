@@ -1,0 +1,15 @@
+groups:
+  - name: monitoriaLojinha
+    rules:
+      - alert: altaTaxaDeErroNasRequisicoes
+        expr: rate(http_server_requests_seconds_count{status="400"}[1m]) >= 0.2
+        for: 1m
+        labels:
+          app: loja-virtual
+          severity: critical
+          group: backend-loja-virtual
+          env: production
+        annotations:
+          title: Taxa de Erros alta
+          summary: A taxa de erro das requisições http estão com valores além do normal.
+          description: Bastante requisições http estão com erro.

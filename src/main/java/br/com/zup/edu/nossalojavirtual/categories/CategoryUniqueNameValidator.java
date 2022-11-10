@@ -1,10 +1,13 @@
 package br.com.zup.edu.nossalojavirtual.categories;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 class CategoryUniqueNameValidator implements Validator {
 
+    Logger logger = LoggerFactory.getLogger(CategoryUniqueNameValidator.class);
     private final CategoryRepository categoryRepository;
 
     CategoryUniqueNameValidator(CategoryRepository categoryRepository) {
@@ -22,6 +25,9 @@ class CategoryUniqueNameValidator implements Validator {
         String name = newCategory.getName();
 
         if (categoryRepository.existsByName(name)) {
+
+            logger.warn("Category {} already registered",name);
+
             errors.rejectValue("name", "category.name.alreadyExists", "this category is already registered");
         }
     }

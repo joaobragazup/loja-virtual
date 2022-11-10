@@ -31,22 +31,22 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: http://localhost:18080/auth/realms/minha-loja-virtual
-#          jwk-set-uri: http://localhost:18080/auth/realms/minha-loja-virtual/protocol/openid-connect/certs
-#      client:
-#        registration:
-#          minha-loja-virtual:
-#            authorization-grant-type: client_credentials
-#            client-id: loja-virtual-client
-#            client-secret: knIyuD3eDeuvnsLs51xKPKfFCTVwD761
-#            scope: products:read, products:write, categories:write, purchase:write
-#        provider:
-#          minha-loja-virtual:
-#            token-uri: http://localhost:18080/auth/realms/minha-loja-virtual/protocol/openid-connect/token
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:18080/realms/minha-loja-virtual
+          jwk-set-uri: http://localhost:18080/realms/minha-loja-virtual/protocol/openid-connect/certs
+      client:
+        registration:
+          minha-loja-virtual:
+            authorization-grant-type: client_credentials
+            client-id: loja-virtual-client
+            client-secret: hrAbPJdrXOj4kGoQ7lLjg7nXKZi6I4wZ
+            scope: products:read, products:write, categories:write, purchase:write
+        provider:
+          minha-loja-virtual:
+            token-uri: http://localhost:18080/realms/minha-loja-virtual/protocol/openid-connect/token
 management:
   health:
     db:

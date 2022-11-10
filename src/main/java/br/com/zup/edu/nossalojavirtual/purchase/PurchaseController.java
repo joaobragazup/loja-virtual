@@ -4,6 +4,8 @@ import br.com.zup.edu.nossalojavirtual.products.ProductRepository;
 import br.com.zup.edu.nossalojavirtual.shared.validators.ObjectIsRegisteredValidator;
 import br.com.zup.edu.nossalojavirtual.users.User;
 import br.com.zup.edu.nossalojavirtual.users.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +26,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/purchase")
 class PurchaseController {
 
+    Logger logger = LoggerFactory.getLogger(PurchaseController.class);
     private final ProductRepository productRepository;
     private final PurchaseRepository purchaseRepository;
 
@@ -51,6 +54,8 @@ class PurchaseController {
             BindException bindException = new BindException(new Object(), "");
             bindException.reject("purchase.product.outOfStock", "This product is out of stock");
 
+            logger.warn("Purchase {} not completed, this product is out of stock",possiblePurchase);
+
             throw bindException;
         }
 
@@ -66,6 +71,8 @@ class PurchaseController {
 
         var response = new HashMap<>();
         response.put("paymentUrl", paymentUrl);
+
+        logger.info("Purchase {} registered",purchase);
 
         return ok(response);
     }

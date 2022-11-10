@@ -2,6 +2,8 @@ package br.com.zup.edu.nossalojavirtual.products;
 
 import br.com.zup.edu.nossalojavirtual.users.User;
 import br.com.zup.edu.nossalojavirtual.users.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import static org.springframework.http.ResponseEntity.notFound;
 @RequestMapping("/api/products/{id}/questions")
 class QuestionController {
 
+    Logger logger = LoggerFactory.getLogger(QuestionController.class);
     private final ProductRepository productRepository;
     private final QuestionRepository questionRepository;
     private final ApplicationEventPublisher publisher;
@@ -49,6 +52,7 @@ class QuestionController {
         Optional<Product> possibleProduct = productRepository.findById(id);
 
         if (possibleProduct.isEmpty()) {
+            logger.warn("Product {} not found",possibleProduct);
             return notFound().build();
         }
 
@@ -62,6 +66,8 @@ class QuestionController {
         List<Question> questions = questionRepository.findByProduct(possibleProduct.get());
 
         List<QuestionResponse> response = QuestionResponse.from(questions);
+
+        logger.info("Question for product {} registered",product);
 
         return created(location).body(response);
 

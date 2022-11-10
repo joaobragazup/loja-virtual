@@ -1,6 +1,8 @@
 package br.com.zup.edu.nossalojavirtual.purchase;
 
 import br.com.zup.edu.nossalojavirtual.shared.validators.ObjectIsRegisteredValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.WebDataBinder;
@@ -17,6 +19,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequestMapping("/api/purchases/confirm-payment")
 class PaymentGatewayReturnController {
 
+    Logger logger = LoggerFactory.getLogger(PaymentGatewayReturnController.class);
 
     private final PurchaseRepository purchaseRepository;
     private final Set<PostPurchaseAction> postPurchaseActions;
@@ -37,6 +40,8 @@ class PaymentGatewayReturnController {
         PostPaymentProcessedPurchase postPaymentPurchase = purchase.process(paymentReturn);
 
         postPurchaseActions.forEach(action -> action.execute(postPaymentPurchase, uriBuilder));
+
+        logger.info("Purchase {} confirmed",purchase);
 
         return ok().build();
     }

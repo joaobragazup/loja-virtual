@@ -8,7 +8,7 @@ groups:
           app: loja-virtual
           severity: critical
           group: backend-loja-virtual
-          env: development
+          env: production
         annotations:
           title: Taxa de uso de CPU alta
           summary: A taxa de uso do CPU para esta jvm está acima do normal.

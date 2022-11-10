@@ -1,5 +1,7 @@
 package br.com.zup.edu.nossalojavirtual.categories;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -7,6 +9,7 @@ import java.util.Optional;
 
 class SuperCategoryExistsValidator implements Validator {
 
+    Logger logger = LoggerFactory.getLogger(SuperCategoryExistsValidator.class);
     private final CategoryRepository categoryRepository;
 
     SuperCategoryExistsValidator(CategoryRepository categoryRepository) {
@@ -27,6 +30,9 @@ class SuperCategoryExistsValidator implements Validator {
             Long superCategoryId = superCategory.get();
 
             if (!categoryRepository.existsById(superCategoryId)) {
+
+                logger.warn("Super Category {} does not exist",superCategoryId);
+
                 errors.rejectValue("superCategory", "category.superCategory", "The super category does not exist");
             }
         }
