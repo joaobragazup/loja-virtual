@@ -163,7 +163,7 @@ class ProductControllerTest extends NossaLojaVirtualApplicationTest {
                 photos,
                 characteristicRequests,
                 "Best Notebook Ever",
-                5L
+                Long.MAX_VALUE
         );
 
         Exception exception = mockMvc.perform(

@@ -1,0 +1,15 @@
+groups:
+  - name: loja-virtual
+    rules:
+      - alert: altoUsoDeCpu
+        expr: ((sum(jvm_memory_used_bytes) / sum(jvm_memory_max_bytes)) * 100) > 70.0
+        for: 5m
+        labels:
+          app: loja-virtual
+          severity: critical
+          group: backend-loja-virtual
+          env: development
+        annotations:
+          title: Taxa de uso de CPU alta
+          summary: A taxa de uso do CPU para esta jvm está acima do normal.
+          description: Mais de 70% da CPU está sendo utilizada.
