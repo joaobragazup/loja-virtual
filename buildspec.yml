@@ -19,4 +19,3 @@ phases:
 artifacts:
   files:
     - 'target/*.jar'
-    - 'loja-virtual-joao-braga.tar.gz'
