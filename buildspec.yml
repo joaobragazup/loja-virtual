@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - docker login --username $DOCKERHUB_USERNAME --password $DOCKERHUB_TOKEN
+  pre_build:
+    commands:
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/i2c7a5l2
+  build:
+    commands:
+      - mvn install
+      - docker build -t loja-virtual-joao-braga .
+      - docker save loja-virtual-joao-braga | gzip > loja-virtual-joao-braga.tar.gz
+      - docker tag loja-virtual-joao-bragaa:latest public.ecr.aws/i2c7a5l2/loja-virtual-joao-braga:latest
+  post_build:
+    commands:
+      - docker push public.ecr.aws/i2c7a5l2/paws-pets-joao-braga:latest
+artifacts:
+  files:
+    - 'target/*.jar'
+    - 'loja-virtual-joao-braga.tar.gz'
