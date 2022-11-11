@@ -12,10 +12,10 @@ phases:
       - mvn install
       - docker build -t loja-virtual-joao-braga .
       - docker save loja-virtual-joao-braga | gzip > loja-virtual-joao-braga.tar.gz
-      - docker tag loja-virtual-joao-bragaa:latest public.ecr.aws/i2c7a5l2/loja-virtual-joao-braga:latest
+      - docker tag loja-virtual-joao-braga:latest public.ecr.aws/i2c7a5l2/loja-virtual-joao-braga:latest
   post_build:
     commands:
-      - docker push public.ecr.aws/i2c7a5l2/paws-pets-joao-braga:latest
+      - docker push public.ecr.aws/i2c7a5l2/loja-virtual-joao-braga:latest
 artifacts:
   files:
     - 'target/*.jar'
